@@ -11,11 +11,13 @@ class App extends Component{
     super(props)
     this.state ={
         data : [
-    {name: 'Alex Morykon', currentMembership: 'Full Gym', increase: false, like: true, id: 1},
-    {name: 'Alex Morykon', currentMembership: 'Full Gym', increase: false, like: false, id: 2},
-    {name: 'Illya Kyakevych', currentMembership: 'Day Gym', increase: false, like: false, id: 3},
-    {name: 'Danylo Litvinchyk', currentMembership: 'Full Gym', increase: true, like: false, id: 4}]
+          {name: 'Alex Morykon', currentMembership: 'Full Gym', increase: false, like: true, id: 1},
+          {name: 'Alex Morykon', currentMembership: 'Full Gym', increase: false, like: false, id: 2},
+          {name: 'Illya Kyakevych', currentMembership: 'Day Gym', increase: false, like: false, id: 3},
+          {name: 'Danylo Litvinchyk', currentMembership: 'Full Gym', increase: true, like: false, id: 4}],
+        term: ''
     }
+
     this.maxId = 4;
     
   }
@@ -28,7 +30,8 @@ class App extends Component{
    })
   }
   addClient = (name, currentMembership) => {
-    const newClient ={
+    if(name.trim().length > 3 || currentMembership.trim().length >3){
+         const newClient ={
       name,
       currentMembership,
       increase: false,
@@ -38,6 +41,11 @@ class App extends Component{
     this.setState(({data}) =>({  
       data: [...data, newClient]
     }))
+    }
+    else{
+      this.setState({ error: "Ім’я має містити лише букви і бути не коротше 3 символів" });
+      return;
+    }
   }
   onToggleProp = (id,prop) =>{
     // this.setState(({data}) =>{
@@ -69,18 +77,35 @@ class App extends Component{
   //     })
   //   }))
   // }
+
+  serchEmp = (items, term) =>{
+    if(term.length === 0){
+      return items
+    }
+    return items.filter(item =>{
+      return item.name.indexOf(term) > -1
+    })
+  }
+  
+  onUpdateSerch = (term) =>{
+    this.setState({term})
+  }
+
+
   render(){
+    const {data, term} = this.state
+    const visibleData =this.serchEmp(data,term)
     return (
     <div className="app">
       <AppInfo memberCounter = {this.state.data.length}
       increaced = {this.state.data.filter(item => item.increase).length}/>
 
       <div className="search-panel">
-          <SearchPanel/>
+          <SearchPanel onUpdateSerch={this.onUpdateSerch}/>
           <AppFilter/>
       </div>
       <ClientList 
-        data={this.state.data}
+        data={visibleData}
         onDelete = {this.deleteItem}
         onToggleProp = {this.onToggleProp}
         />

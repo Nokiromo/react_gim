@@ -31,7 +31,7 @@ class ClientAddForm extends Component{
                 <input type="number" className="form-control new-post-label" 
                 placeholder="$$$$" name= 'currentMembership' value={currentMembership} onChange={this.onValueChange}
                 />
-                <button className="btn btn-outline-light">Add</button>
+                <button  className="btn btn-outline-light">Add</button>
             </form>
         </div>
     )
