@@ -15,7 +15,8 @@ class App extends Component{
           {name: 'Alex Morykon', currentMembership: 'Full Gym', increase: false, like: false, id: 2},
           {name: 'Illya Kyakevych', currentMembership: 'Day Gym', increase: false, like: false, id: 3},
           {name: 'Danylo Litvinchyk', currentMembership: 'Full Gym', increase: true, like: false, id: 4}],
-        term: ''
+        term: '',
+        stan: 'all'
     }
 
     this.maxId = 4;
@@ -86,6 +87,20 @@ class App extends Component{
       return item.name.indexOf(term) > -1
     })
   }
+
+    serchStan = (items, stan) =>{
+      switch(stan){
+        case 'like':
+          return items.filter(items => items.like)
+        case 'increace':
+        return items.filter(items => items.increase)
+        default: 
+          return items
+      }
+    }
+  onFilterSelect = (stan) =>{
+    this.setState({stan})
+  }
   
   onUpdateSerch = (term) =>{
     this.setState({term})
@@ -93,8 +108,9 @@ class App extends Component{
 
 
   render(){
-    const {data, term} = this.state
-    const visibleData =this.serchEmp(data,term)
+    const {data, term,  stan} = this.state
+    const visibleData = this.serchStan(this.serchEmp(data,term), stan)
+    
     return (
     <div className="app">
       <AppInfo memberCounter = {this.state.data.length}
@@ -102,7 +118,7 @@ class App extends Component{
 
       <div className="search-panel">
           <SearchPanel onUpdateSerch={this.onUpdateSerch}/>
-          <AppFilter/>
+          <AppFilter stan={stan} onFilterSelect={this.onFilterSelect}/>
       </div>
       <ClientList 
         data={visibleData}
